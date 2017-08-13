@@ -6,12 +6,19 @@ $(document).ready(function(){
 
     $('#todoButton').on('click',function(){
         console.log('todoButton clicked');
-
-        var objectToSend = {
-            todo: $('todoInput').val(),
-            complete: $('completeRadio')
+        var todoInput = $('#todoInput').val();
+        var completeRadio = $('#completeRadio').val();
+        var inputObject = {
+          todo: todoInput,
+          radio: completeRadio
         };
-    
+       
+        });
+        $.ajax({
+          method: 'POST',
+          url: '/todos',
+          data: inputObject
+        })
         
 
 
@@ -27,7 +34,7 @@ $(document).ready(function(){
 
 
 
-
+ getTodos(objectToSend);
 });
 
 function todos() {
