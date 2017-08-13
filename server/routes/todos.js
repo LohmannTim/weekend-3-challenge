@@ -37,7 +37,7 @@ router.put('/:id', function(req, res){
 			console.log('Error connecting to database', errorConnectingToDatabase);
 			res.sendStatus(500);
 		} else {
-			client.query('UPDATE =$1 WHERE id=$2', //why doesn't this work? UPDATE honeyDo SET ready_for_transfer="Y" WHERE id=$1
+			client.query('UPDATE =$1 WHERE id=$2', //why doesn't this work? UPDATE honeyDo SET todo="Y" WHERE id=$1
 							['Y', todoId], 
 							function(errorMakingQuery, result) {
 				done();
