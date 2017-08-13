@@ -6,7 +6,7 @@ var port = process.env.PORT || 5000;
 var todos = require('./routes/todos');
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static('server/public'));
+app.use(express.static('server/public/'));
 app.use('/todos', todos);
 
 // Start listening for requests on a specific port

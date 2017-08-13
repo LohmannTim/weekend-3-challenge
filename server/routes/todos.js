@@ -4,7 +4,22 @@ var pool = require('../modules/pool');
 
 
 router.get('/', function(req, res){
-    res.send(todos)
+	pool.connect(function (errorConnectingToDatabase, client, done) {//existing parameters to be passed under conditions 
+		if (errorConnectingToDatabase) {
+			console.log('Error connecting to database', errorConnectingToDatabase);
+			res.sendStatus(500);
+		} else {
+			client.query('SELECT * FROM todos;', function (errorMakingQuery, result) {
+				done();
+				if (errorMakingQuery) {
+					console.log('Error making database query', errorMakingQuery);//sends error mes
+					res.sendStatus(500);
+				} else {
+					res.send(result.rows); //sends back the data from DB
+				}
+			});
+		}
+	});
 });
 
 router.post('/', function (req, res) {
