@@ -32,13 +32,13 @@ router.post('/', function (req, res) {
 			res.sendStatus(500);
 		} else {
 
-			client.query('INSERT INTO honeyDoList(task) VALUES($1);', [req.body.task, req.body.complete], function (errorMakingQuery, result) {
+			client.query('INSERT INTO todos (task,complete) VALUES ($1,false);', [req.body.todo], function (errorMakingQuery, result) {
 				done();
 				if (errorMakingQuery) {
 					console.log('Error making database query', errorMakingQuery);
 					res.sendStatus(500);
 				} else {
-					res.sendStatus(201);
+					res.sendStatus(200);
 				}
 			});
 		}
@@ -66,5 +66,26 @@ router.put('/:id', function(req, res){
 		}
 	});
 });
+router.delete('/:id', function (req, res) {
+	console.log('delete was hit!');
+	var taskId = req.params.id;
+	pool.connect(function (errorConnectingToDatabase, client, done) {
+		if (errorConnectingToDatabase) {
 
+			console.log('Error connecting to database', errorConnectingToDatabase);
+			res.sendStatus(500);
+		} else {
+
+			client.query('DELETE FROM todos WHERE id = $1', [taskId], function (errorMakingQuery, result) {
+				done();
+				if (errorMakingQuery) {
+					console.log('Error making database query', errorMakingQuery);
+					res.sendStatus(500);
+				} else {
+					res.sendStatus(200);
+				}
+			});
+		}
+	});
+});
 module.exports = router;

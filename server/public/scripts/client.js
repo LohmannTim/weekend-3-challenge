@@ -4,23 +4,37 @@ $(document).ready(function () {
   console.log('jQuery loaded');
   getTodos();
 
-  $('#todoButton').on('click', function () {
+  $('#addTodoButton').on('click', function () {
     console.log('todoButton clicked');
     var todoInput = $('#todoInput').val();
-    var completeRadio = $('#completeRadio').val();
     var inputObject = {
-      todo: todoInput,
-      radio: completeRadio
+      todo: todoInput
     };
+    $.ajax({
+      method: 'POST',
+      url: '/todos',
+      data: inputObject,
+      success: function (response) {
+        console.log(response);
+        getTodos();
+      }
+    });
+  });
+  $('#listOfTasks').on('click', '.deleteButton', function () {
+    var taskId = $(this).parent().parent().data().id;
+    console.log(taskId);
+    $.ajax({
+      type: 'DELETE',
+      url: '/todos/' + taskId,
+      success: function (response) {
+        console.log(response);
+        getTodos();
+      }
+    })
+  });
 
-  });
-  $.ajax({
-    method: 'POST',
-    url: '/todos',
-    data: inputObject
-  });
+
 });
-
 //getTodos(objectToSend);
 
 function getTodos() {
@@ -29,7 +43,7 @@ function getTodos() {
   $.ajax({
     type: 'GET',
     url: '/todos',
-     //grab entire table from DB
+    //grab entire table from DB
     success: function (data) { //data is result of success
       console.log('got the todos: ', data);
       makeTodos(data); //pass the table to makeTodos function
@@ -39,14 +53,17 @@ function getTodos() {
 } // end gettodos
 
 function makeTodos(data) {
-  $('#viewTodos').empty();
+  $('#listOfTasks').empty();
   for (var i = 0; i < data.length; i++) {
     var todo = data[i];
+    var $taskrow = '<tr><td>' + todo.task + '</td><td>' + todo.complete + '</td><td><button class= "deleteButton">delete</button></td></tr>'
+    $taskrow = $($taskrow); //taking above string and making a new html element
+    $taskrow.data('id', todo.id); //takes data from object and makes key/value pair
     console.log(todo.task);
-    $('#listOfTasks').prepend('<tr><td>' + todo.task + '</td><td>' + todo.complete + '</td><td><button class= "deleteButton">delete</button></td></tr>');
+    $('#listOfTasks').prepend($taskrow);
     // var $todoRow = $('<tr></tr>');
     // $todoRow.data('id', todo.id);
   }
 }
 
-$('#viewtodos').prepend($todoRow); //puts todoRow on tb for viewtodos
+//$('#viewtodos').prepend($todoRow); //puts todoRow on tb for viewtodos
